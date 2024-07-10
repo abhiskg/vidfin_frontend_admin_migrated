@@ -1,0 +1,24 @@
+version: '3.3'
+networks:
+  web:
+    external: true
+  internal:
+    external: false 
+
+services:
+  web-mig-main:
+    container_name: web-mig-main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    labels:
+      - traefik.http.routers.assetyogi-web-mig-main.rule=Host(`web-mig-main.edalytics.com`)
+      - traefik.http.routers.assetyogi-web-mig-main.tls=true
+      - traefik.http.routers.assetyogi-web-mig-main.tls.certresolver=lets-encrypt
+      - traefik.port=3000 
+    environment:
+      - NEXT_PUBLIC_BASE_URL=https://dev-api.vidfin.com/api
+      - NODE_ENV=development
+    networks:
+      - web
+      - internal 

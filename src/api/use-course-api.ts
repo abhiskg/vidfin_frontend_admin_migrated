@@ -70,7 +70,7 @@ export const useAddCourseMutation = () => {
     } else if (payload.tags !== undefined) {
       payload.tags = processTags(payload.tags);
     }
-
+    delete payload.categories;
     return request({
       url: `/services/en/v1/admin/addCourse`,
       method: "POST",
@@ -99,8 +99,6 @@ export const useAddCourseMutation = () => {
 };
 
 export const useUpdateCourseMutation = () => {
-  const queryClient = useQueryClient();
-
   const updateCourse = (
     payload: ICourseEditForm & {
       course_id: string;
@@ -152,11 +150,7 @@ export const useUpdateCourseMutation = () => {
 
   return useMutation({
     mutationFn: updateCourse,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["course"],
-      });
-    },
+
     onError: (error) => {
       if (error instanceof Error && error.message !== "") {
         toast.error(error.message);

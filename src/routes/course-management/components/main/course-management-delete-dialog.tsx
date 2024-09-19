@@ -42,7 +42,7 @@ export function CourseManagementDeleteDialog({
           <DialogTitle>Are you sure?</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Are you sure you want to delete this insight?
+          Are you sure you want to delete this course?
         </DialogDescription>
         <DialogFooter>
           {!isPending ? (

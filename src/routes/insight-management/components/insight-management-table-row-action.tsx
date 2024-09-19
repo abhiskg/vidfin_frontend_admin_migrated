@@ -146,7 +146,7 @@ export function InsightManagementRowActions<TData>({
         id={insight.insight_id}
         status={insight.status}
         title={`${insight.insight_title} has been added`}
-        message={`Click to see new insight ${insight.insight_title}`}
+        message={`Click to see new ${insight.type === "1" ? "insight" : "stock recommendation"} ${insight.insight_title}`}
         insight_id={insight.insight_id.toString()}
         notification_type={insight.insight_type === 1 ? "6" : "19"}
       />

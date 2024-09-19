@@ -31,6 +31,14 @@ export const courseSchema = z.object({
   has_chapter: z.number(),
   created_at: z.string(),
   updated_at: z.string(),
+  categories: z
+    .array(
+      z.object({
+        id: z.number(),
+        category_id: z.number(),
+      }),
+    )
+    .or(z.undefined()),
 });
 
 export type ICourse = z.infer<typeof courseSchema>;
@@ -95,6 +103,7 @@ export const courseFormSchema = z.object({
     .refine((value) => !/^\s*$/.test(value), "Slug can't be empty"),
 
   available_for_plans: z.array(z.string()).optional(),
+  categories: z.array(z.string()).optional(),
 
   preview_thumbnail: z
     .instanceof(FileList, { message: "Image is required" })
@@ -175,6 +184,7 @@ export const courseEditFormSchema = z.object({
   preview_thumbnail: z.any().optional(),
 
   videoid: z.string().optional(),
+  categories: z.array(z.string()).optional(),
 });
 
 export type ICourseEditForm = z.infer<typeof courseEditFormSchema>;

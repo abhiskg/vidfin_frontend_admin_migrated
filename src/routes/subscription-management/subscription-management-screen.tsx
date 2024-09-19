@@ -63,7 +63,10 @@ export default function SubscriptionManagementScreen() {
       {data && data.length > 0 && (
         <SubscriptionManagementTable
           columns={subscriptionManagementTableColumns}
-          data={data}
+          data={data.map((item) => ({
+            ...item,
+            price: +item.price,
+          }))}
         />
       )}
       <SubscriptionManagementAddDialog

@@ -11,7 +11,7 @@ export const useQueryAppUsers = () => {
     totalItems: number;
   }> => {
     const data = await request({
-      url: `/services/en/v1/admin/userLists?page=1`,
+      url: `/services/en/v1/admin/userLists?page=1&limit=2000`,
     });
 
     return data.res.data;

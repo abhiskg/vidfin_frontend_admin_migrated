@@ -118,6 +118,7 @@ export function EditorToolbar({ editor, disabled }: EditorToolbarProps) {
       </Toggle>
       <Button
         size="icon"
+        type="button"
         variant="ghost"
         onClick={() => editor.chain().focus().unsetLink().run()}
         disabled={!editor.isActive("link")}
@@ -126,6 +127,7 @@ export function EditorToolbar({ editor, disabled }: EditorToolbarProps) {
       </Button>
       <Button
         size="icon"
+        type="button"
         variant="ghost"
         disabled={!editor.can().chain().focus().undo().run()}
         onClick={() => editor.chain().focus().undo().run()}
@@ -134,6 +136,7 @@ export function EditorToolbar({ editor, disabled }: EditorToolbarProps) {
       </Button>
       <Button
         size="icon"
+        type="button"
         variant="ghost"
         disabled={!editor.can().chain().focus().redo().run()}
         onClick={() => editor.chain().focus().redo().run()}

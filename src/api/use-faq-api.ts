@@ -64,6 +64,7 @@ export const useUpdateFaqMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["faq"],
       });
+      toast.success("FAQ updated successfully");
     },
     onError: (error) => {
       if (error instanceof Error && error.message !== "") {

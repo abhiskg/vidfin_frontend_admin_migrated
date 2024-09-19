@@ -13,7 +13,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   bannerDeviceConstant,
   bannerItemConstant,
@@ -26,6 +42,7 @@ import {
 } from "@/types/banner.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface Props {
   isOpen: boolean;
@@ -40,6 +57,24 @@ export function BannerManagementEditDialog({
 }: Props) {
   const { data: courses } = useQueryCourses();
   const { data: insights } = useQueryInsights();
+
+  const activeInsightOptions = insights
+    ?.filter(
+      (insight) => insight.status === "published" && insight.type === "1",
+    )
+    .map((insight) => ({
+      label: insight.insight_title,
+      value: insight.insight_id.toString(),
+    }));
+
+  const activeStockOptions = insights
+    ?.filter(
+      (insight) => insight.status === "published" && insight.type === "2",
+    )
+    .map((insight) => ({
+      label: insight.insight_title,
+      value: insight.insight_id.toString(),
+    }));
 
   const form = useForm<IBannerUpdateForm>({
     resolver: zodResolver(bannerFormUpdateSchema),
@@ -58,6 +93,24 @@ export function BannerManagementEditDialog({
   const { isPending, mutate } = useUpdateBannerMutation();
 
   const onSubmit = (data: IBannerUpdateForm) => {
+    // if banner.item_type === 'courses' then item_id should be from courses otherwise show toast and return
+
+    if (
+      data.item_type === "courses" &&
+      !courses?.find((course) => course.course_id === Number(data.item_id))
+    ) {
+      toast.error("Add course item from courses");
+      return;
+    }
+
+    if (
+      data.item_type === "insights" &&
+      !insights?.find((insight) => insight.insight_id === Number(data.item_id))
+    ) {
+      toast.error("Add insight item from insights");
+      return;
+    }
+
     mutate(
       {
         banner_id: banner.banner_id.toString(),
@@ -111,6 +164,10 @@ export function BannerManagementEditDialog({
                     name="banner_file"
                     accept="image/*"
                     placeholder="Upload banner file"
+                    disabled={
+                      form.watch("device_type") === "mobile" ||
+                      form.watch("device_type") === ""
+                    }
                   />
                   <FormInputFile
                     form={form}
@@ -118,6 +175,10 @@ export function BannerManagementEditDialog({
                     name="banner_file_mobile"
                     accept="image/*"
                     placeholder="Upload mobile banner file"
+                    disabled={
+                      form.watch("device_type") === "web" ||
+                      form.watch("device_type") === ""
+                    }
                   />
                 </div>
                 <div>
@@ -148,24 +209,80 @@ export function BannerManagementEditDialog({
                       form={form}
                       label="Course Item"
                       name="item_id"
-                      options={courses?.map((course) => ({
-                        label: course.course_name,
-                        value: course.course_id.toString(),
-                      }))}
+                      options={courses
+                        ?.filter((course) => course.status === "published")
+                        .map((course) => ({
+                          label: course.course_name,
+                          value: course.course_id.toString(),
+                        }))}
                       placeholder="Select course"
                     />
                   )}
                   {form.watch("item_type") === "insights" && insights && (
-                    <FormSelect
-                      form={form}
-                      label="Insight Item"
+                    <FormField
+                      control={form.control}
                       name="item_id"
-                      options={insights?.map((insight) => ({
-                        label: insight.insight_title,
-                        value: insight.insight_id.toString(),
-                      }))}
-                      placeholder="Select insight"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">
+                            Insight Item
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select insight" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {activeInsightOptions?.length &&
+                                activeInsightOptions.length > 0 && (
+                                  <SelectGroup>
+                                    <SelectLabel>Insights</SelectLabel>
+                                    {activeInsightOptions.map((option) => (
+                                      <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                )}
+                              {activeStockOptions?.length &&
+                                activeStockOptions.length > 0 && (
+                                  <SelectGroup>
+                                    <SelectLabel>Stocks</SelectLabel>
+                                    {activeStockOptions.map((option) => (
+                                      <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
+                    // <FormSelect
+                    //   form={form}
+                    //   label="Insight Item"
+                    //   name="item_id"
+                    //   options={insights
+                    //     ?.filter((insight) => insight.status === "published")
+                    //     .map((insight) => ({
+                    //       label: insight.insight_title,
+                    //       value: insight.insight_id.toString(),
+                    //     }))}
+                    //   placeholder="Select insight"
+                    // />
                   )}
                 </div>
               </div>

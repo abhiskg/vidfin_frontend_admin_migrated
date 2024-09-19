@@ -7,7 +7,7 @@ export const subscriptionSchema = z.object({
   duration: z.string(),
   duration_type: z.string(),
   duration_in_days: z.number(),
-  price: z.string(),
+  price: z.number(),
   description: z.string(),
   insight_gift: z.number(),
   plan_image: z.string(),
@@ -38,12 +38,8 @@ export const subscriptionFormSchema = z.object({
       message: "Duration has to be a number",
     }),
   duration_type: z.string().min(1, "Duration Month can't be empty"),
-  insight_gift: z
-    .string()
-    .min(1, "Insight gift can't be empty")
-    .refine((val) => /^\d+$/.test(val), {
-      message: "Insight gift has to be a number",
-    }),
+  insight_gift: z.string().optional(),
+
   description: z
     .string()
     .min(1, "Description can't be empty")

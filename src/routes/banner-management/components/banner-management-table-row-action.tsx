@@ -166,11 +166,13 @@ export function BannerManagementRowActions<TData>({
         isOpen={isViewDialogOpen}
         setIsOpen={setIsViewDialogOpen}
         banner={banner}
+        key={banner.banner_id + banner.updated_at}
       />
       <BannerManagementEditDialog
         isOpen={isEditDialogOpen}
         setIsOpen={setIsEditDialogOpen}
         banner={banner}
+        key={banner.banner_id + banner.updated_at}
       />
     </>
   );

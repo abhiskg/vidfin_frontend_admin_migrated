@@ -23,7 +23,7 @@ export const courseAssessmentQuestionSchema = z.object({
   course_id: z.number(),
   questions: z.string(),
   answer_description: z.string().nullable(),
-  is_deleted: z.number(),
+  is_deleted: z.string(),
   created_at: z.string(),
   updated_at: z.string(),
 });

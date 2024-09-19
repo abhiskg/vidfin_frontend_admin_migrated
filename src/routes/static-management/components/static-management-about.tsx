@@ -14,6 +14,7 @@ import {
 } from "@/types/static.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function StaticManagementAbout() {
   const { isPending, data: staticContent } = useQueryStaticContent("about");
@@ -47,11 +48,18 @@ function StaticManagementAboutForm({
   const { isPending, mutate } = useUpdateStaticContentMutation();
 
   const onSubmit = (data: IStaticContentForm) => {
-    mutate({
-      type: data.type,
-      content: data.content,
-      id: staticContent.id.toString(),
-    });
+    mutate(
+      {
+        type: data.type,
+        content: data.content,
+        id: staticContent.id.toString(),
+      },
+      {
+        onSuccess: () => {
+          toast.success("About Us updated successfully");
+        },
+      },
+    );
   };
   return (
     <div>

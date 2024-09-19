@@ -23,7 +23,7 @@ export const subscriptionManagementTableColumns: ColumnDef<ISubscription>[] = [
       <DataTableColumnHeader column={column} title="Duration" />
     ),
     enableSorting: true,
-    enableHiding: false,
+    enableHiding: true,
     cell: ({ row }) => (
       <span>
         {convertDaysToYearsOrMonthsOrDays(row.getValue("duration_in_days"))}
@@ -45,11 +45,11 @@ export const subscriptionManagementTableColumns: ColumnDef<ISubscription>[] = [
     ),
     enableSorting: true,
     enableHiding: true,
-    // cell: ({ row }) => (
-    //   <div className="mx-auto flex items-center  text-center">
-    //     {row.getValue("subscriber")}
-    //   </div>
-    // ),
+    cell: ({ row }) => (
+      <div className="ml-10 flex items-center text-center">
+        {row.getValue("subscriber")}
+      </div>
+    ),
   },
   {
     accessorKey: "status",

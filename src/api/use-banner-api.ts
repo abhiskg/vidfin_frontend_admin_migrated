@@ -143,7 +143,7 @@ export const useUpdateBannerMutation = () => {
 
     if (payload.item_type === "subscription") {
       // @ts-ignore
-      delete payload.item_id;
+      payload.item_id = 0;
     }
 
     return request({

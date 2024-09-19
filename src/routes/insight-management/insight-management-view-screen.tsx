@@ -1,4 +1,8 @@
 import { useQueryInsight } from "@/api/use-insight-api";
+import {
+  useQueryInsightCategory,
+  useQueryStockCategory,
+} from "@/api/use-insight-category-api";
 import { useQuerySubscriptions } from "@/api/use-subscription-api";
 import { FormCheckbox } from "@/components/form/form-checkbox";
 import { FormInput } from "@/components/form/form-input";
@@ -9,6 +13,7 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Form } from "@/components/ui/form";
 import { insightCategories } from "@/constants/insight-constant";
 import { availableLanguages } from "@/constants/language-constant";
+import type { ICategory } from "@/types/category.type";
 import {
   insightFormSchema,
   type IInsight,
@@ -27,18 +32,36 @@ export default function InsightManagementViewScreen() {
   const { data: subscriptions, isPending: isSubscriptionPending } =
     useQuerySubscriptions();
 
-  if (isSubscriptionPending || isInsightPending) {
+  const {
+    data: availableInsightCategories,
+    isPending: isInsightCategoryPending,
+  } = useQueryInsightCategory();
+
+  const { data: availableStockCategories, isPending: isStockCategoryPending } =
+    useQueryStockCategory();
+
+  if (
+    isSubscriptionPending ||
+    isInsightPending ||
+    isInsightCategoryPending ||
+    isStockCategoryPending
+  ) {
     return <PageLoader />;
   }
 
   return (
     <>
-      {insight && subscriptions && (
-        <InsightManagementViewForm
-          insight={insight}
-          subscriptions={subscriptions}
-        />
-      )}
+      {insight &&
+        subscriptions &&
+        availableInsightCategories &&
+        availableStockCategories && (
+          <InsightManagementViewForm
+            insight={insight}
+            subscriptions={subscriptions}
+            availableInsightCategories={availableInsightCategories}
+            availableStockCategories={availableStockCategories}
+          />
+        )}
     </>
   );
 }
@@ -46,11 +69,15 @@ export default function InsightManagementViewScreen() {
 interface InsightManagementViewFormProps {
   insight: IInsight;
   subscriptions: ISubscription[];
+  availableInsightCategories: ICategory[];
+  availableStockCategories: ICategory[];
 }
 
 function InsightManagementViewForm({
   insight,
   subscriptions,
+  availableInsightCategories,
+  availableStockCategories,
 }: InsightManagementViewFormProps) {
   const form = useForm<IInsightForm>({
     resolver: zodResolver(insightFormSchema),
@@ -66,6 +93,10 @@ function InsightManagementViewForm({
       thumbnail: undefined,
       type: insight?.type.toString() || "",
       videoid: insight?.videoid || "",
+      categories:
+        insight?.categories?.map((category) =>
+          category.category_id.toString(),
+        ) || [],
     },
   });
 
@@ -173,6 +204,32 @@ function InsightManagementViewForm({
                 className="grid grid-cols-6 gap-2"
                 disabled
               />
+              {insight.type.toString() === "1" && (
+                <FormCheckbox
+                  form={form}
+                  label="Available categories"
+                  name="categories"
+                  options={availableInsightCategories.map((category) => ({
+                    label: category.title,
+                    value: category.id.toString(),
+                  }))}
+                  className="grid grid-cols-6 gap-2"
+                  disabled
+                />
+              )}
+              {insight.type.toString() === "2" && (
+                <FormCheckbox
+                  form={form}
+                  label="Available categories"
+                  name="categories"
+                  options={availableStockCategories.map((category) => ({
+                    label: category.title,
+                    value: category.id.toString(),
+                  }))}
+                  className="grid grid-cols-6 gap-2"
+                  disabled
+                />
+              )}
               <FormTextarea
                 form={form}
                 placeholder="Enter description"

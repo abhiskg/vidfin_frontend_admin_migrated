@@ -35,7 +35,7 @@ export function SubscriptionManagementViewDialog({
     resolver: zodResolver(subscriptionFormSchema),
     defaultValues: {
       title: subscription.title,
-      price: subscription.price,
+      price: subscription.price.toString(),
       duration: subscription.duration,
       duration_type: subscription.duration_type,
       insight_gift: subscription.insight_gift.toString(),

@@ -1,4 +1,5 @@
 import { useQueryCourse, useQueryCourses } from "@/api/use-course-api";
+import { useQueryCourseCategory } from "@/api/use-course-category-api";
 import { useQuerySubscriptions } from "@/api/use-subscription-api";
 import { FormCheckbox } from "@/components/form/form-checkbox";
 import { FormInput } from "@/components/form/form-input";
@@ -11,6 +12,7 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Form } from "@/components/ui/form";
 import { courseSubtitles } from "@/constants/course-constant";
 import { availableLanguages } from "@/constants/language-constant";
+import type { ICategory } from "@/types/category.type";
 import {
   courseFormSchema,
   type ICourse,
@@ -29,18 +31,26 @@ export default function CourseManagementViewScreen() {
     useQuerySubscriptions();
 
   const { data: courses, isPending: isCoursesPending } = useQueryCourses();
+  const { data: categories, isPending: isCategoryPending } =
+    useQueryCourseCategory();
 
-  if (isSubscriptionPending || isCoursePending || isCoursesPending) {
+  if (
+    isSubscriptionPending ||
+    isCoursePending ||
+    isCoursesPending ||
+    isCategoryPending
+  ) {
     return <PageLoader />;
   }
 
   return (
     <>
-      {course && subscriptions && courses && (
+      {course && subscriptions && courses && categories && (
         <CourseManagementViewForm
           course={course}
           subscriptions={subscriptions}
           courses={courses}
+          categories={categories}
         />
       )}
     </>
@@ -51,12 +61,14 @@ interface CourseManagementViewFormProps {
   course: ICourse;
   courses: ICourse[];
   subscriptions: ISubscription[];
+  categories: ICategory[];
 }
 
 function CourseManagementViewForm({
   course,
   subscriptions,
   courses,
+  categories,
 }: CourseManagementViewFormProps) {
   const form = useForm<ICourseForm>({
     resolver: zodResolver(courseFormSchema),
@@ -187,6 +199,17 @@ function CourseManagementViewForm({
                 options={subscriptions.map((sub) => ({
                   label: sub.title,
                   value: sub.id.toString(),
+                }))}
+                className=" grid grid-cols-6 gap-2"
+                disabled
+              />
+              <FormCheckbox
+                form={form}
+                label="Available Categories"
+                name="categories"
+                options={categories.map((category) => ({
+                  label: category.title,
+                  value: category.id.toString(),
                 }))}
                 className=" grid grid-cols-6 gap-2"
                 disabled

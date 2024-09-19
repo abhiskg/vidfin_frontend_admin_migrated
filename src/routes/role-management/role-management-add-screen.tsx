@@ -15,6 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function RoleManagementAddScreen() {
   const form = useForm<IRolePermissionForm>({
@@ -44,6 +45,15 @@ export default function RoleManagementAddScreen() {
   const user = useAppStore((state) => state.user);
 
   const onSubmit = (data: IRolePermissionForm) => {
+    if (
+      Object.values(data)
+        .slice(1)
+        .every((value) => value.length === 0)
+    ) {
+      toast.error("Please select at least one permission");
+      return;
+    }
+
     const permissions = {
       Dashboard: convertPermissionIntoObject(data.Dashboard),
       featured_category_management: convertPermissionIntoObject(

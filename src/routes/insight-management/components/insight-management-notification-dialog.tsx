@@ -115,14 +115,14 @@ export function InsightManagementNotificationDialog({
               />
             </div>
             <DialogFooter>
-              {!isInsightStatusPending || !isPushNotificationPending ? (
-                <Button type="submit" className="px-[22px]">
-                  Update Status & Notification
-                </Button>
-              ) : (
+              {isInsightStatusPending || isPushNotificationPending ? (
                 <Button disabled>
                   <Icons.buttonLoader className="mr-1 h-5 w-5 animate-spin stroke-card" />
                   Loading...
+                </Button>
+              ) : (
+                <Button type="submit" className="px-[22px]">
+                  Update Status & Notification
                 </Button>
               )}
             </DialogFooter>

@@ -64,6 +64,8 @@ export const useAddInsightMutation = () => {
       payload.tags = processTags(payload.tags);
     }
 
+    delete payload.categories;
+
     return request({
       url: `/services/en/v1/admin/add_insight`,
       method: "POST",
@@ -92,8 +94,6 @@ export const useAddInsightMutation = () => {
 };
 
 export const useUpdateInsightMutation = () => {
-  const queryClient = useQueryClient();
-
   const updateInsight = (
     payload: IInsightEditForm & {
       insight_id: string;
@@ -139,11 +139,7 @@ export const useUpdateInsightMutation = () => {
 
   return useMutation({
     mutationFn: updateInsight,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["insight"],
-      });
-    },
+
     onError: (error) => {
       if (error instanceof Error && error.message !== "") {
         toast.error(error.message);
@@ -155,8 +151,6 @@ export const useUpdateInsightMutation = () => {
 };
 
 export const useInsightStatusMutation = () => {
-
-
   const updateStatus = (payload: { id: string; status: string }) =>
     request({
       url: `/services/en/v1/admin/action_insight?status=${payload.status}&id=${payload.id}`,

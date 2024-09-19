@@ -1,4 +1,8 @@
 import { useAddCourseMutation, useQueryCourses } from "@/api/use-course-api";
+import {
+  useAddCourseCategoryMutation,
+  useQueryCourseCategory,
+} from "@/api/use-course-category-api";
 import { useQuerySubscriptions } from "@/api/use-subscription-api";
 import { FormCheckbox } from "@/components/form/form-checkbox";
 import { FormInput } from "@/components/form/form-input";
@@ -23,6 +27,8 @@ export default function CourseManagementAddScreen() {
   const { data: subscriptions, isPending: isSubscriptionPending } =
     useQuerySubscriptions();
   const { data: courses, isPending: isCoursePending } = useQueryCourses();
+  const { data: categories, isPending: isCategoryPending } =
+    useQueryCourseCategory();
 
   const navigate = useNavigate();
 
@@ -43,22 +49,41 @@ export default function CourseManagementAddScreen() {
       videoid: "",
       tags: "",
       preview_thumbnail: undefined,
+      categories: [],
     },
   });
   const { isPending, mutate } = useAddCourseMutation();
+  const { mutate: mutateCategory, isPending: isCategoryMutationPending } =
+    useAddCourseCategoryMutation();
 
   const onSubmit = (data: ICourseForm) => {
     // If subtitle_file is undefined, remove it from the form data
 
+    const categories = data.categories;
     mutate(data, {
-      onSuccess: () => {
-        form.reset();
-        navigate("/course-management");
+      onSuccess: (res) => {
+        if (categories?.length) {
+          mutateCategory(
+            {
+              category_ids: categories.map((category) => parseInt(category)),
+              course_id: res.data.course.course_id,
+            },
+            {
+              onSuccess: () => {
+                form.reset();
+                navigate("/course-management");
+              },
+            },
+          );
+        } else {
+          form.reset();
+          navigate("/course-management");
+        }
       },
     });
   };
 
-  if (isSubscriptionPending || isCoursePending) {
+  if (isSubscriptionPending || isCoursePending || isCategoryPending) {
     return <PageLoader />;
   }
 
@@ -80,7 +105,7 @@ export default function CourseManagementAddScreen() {
           },
         ]}
       />
-      {subscriptions && courses && (
+      {subscriptions && courses && categories && (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
             <div className="py-3">
@@ -144,7 +169,7 @@ export default function CourseManagementAddScreen() {
                 name="similer_courses"
                 label="Similar Courses"
                 placeholder="Select Similar Courses"
-                options={courses.map((course) => ({
+                options={courses.filter((course) => course.status === "published").map((course) => ({
                   label: course.course_name,
                   value: course.course_id.toString(),
                 }))}
@@ -156,6 +181,16 @@ export default function CourseManagementAddScreen() {
                 options={subscriptions.map((sub) => ({
                   label: sub.title,
                   value: sub.id.toString(),
+                }))}
+                className=" grid grid-cols-6 gap-2"
+              />
+              <FormCheckbox
+                form={form}
+                label="Available Categories"
+                name="categories"
+                options={categories.map((category) => ({
+                  label: category.title,
+                  value: category.id.toString(),
                 }))}
                 className=" grid grid-cols-6 gap-2"
               />
@@ -186,18 +221,18 @@ export default function CourseManagementAddScreen() {
               />
             </div>
 
-            {!isPending ? (
+            {isPending || isCategoryMutationPending ? (
+              <Button disabled>
+                <Icons.buttonLoader className="mr-1 h-5 w-5 animate-spin stroke-card" />
+                Loading...
+              </Button>
+            ) : (
               <Button
                 type="submit"
                 className="px-[22px]"
                 disabled={!form.formState.isDirty}
               >
                 Add Course
-              </Button>
-            ) : (
-              <Button disabled>
-                <Icons.buttonLoader className="mr-1 h-5 w-5 animate-spin stroke-card" />
-                Loading...
               </Button>
             )}
           </form>

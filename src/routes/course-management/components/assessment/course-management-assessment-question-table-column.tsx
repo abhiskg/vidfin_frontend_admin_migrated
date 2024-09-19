@@ -1,7 +1,7 @@
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import type { ICourseAssessmentQuestion } from "@/types/course-assessment.type";
 import type { ColumnDef } from "@tanstack/react-table";
 import { CourseManagementAssessmentQuestionRowActions } from "./course-management-assessment-question-table-row-action";
-import type { ICourseAssessmentQuestion } from "@/types/course-assessment.type";
 
 export const courseManagementAssessmentQuestionTableColumns: ColumnDef<ICourseAssessmentQuestion>[] =
   [
@@ -18,11 +18,18 @@ export const courseManagementAssessmentQuestionTableColumns: ColumnDef<ICourseAs
       enableSorting: true,
     },
     {
-      accessorKey: "answer_description",
+      accessorKey: "options",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Answer" />
       ),
-      enableSorting: true,
+      enableSorting: false,
+      cell: ({ row }) => (
+        <span>
+          {row.original.options.map((option, index) => (
+            <div key={index}>{option.is_correct === "1" && option.option}</div>
+          ))}
+        </span>
+      ),
     },
 
     {

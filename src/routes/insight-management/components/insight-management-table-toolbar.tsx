@@ -42,11 +42,11 @@ export function InsightManagementTableToolbar<TData>({
             title="Type"
             options={[
               {
-                value: 1,
+                value: "1",
                 label: "Insights",
               },
               {
-                value: 2,
+                value: "2",
                 label: "Stocks",
               },
             ]}

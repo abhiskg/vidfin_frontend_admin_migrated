@@ -48,7 +48,7 @@ export const insightManagementTableColumns: ColumnDef<IInsight>[] = [
     enableSorting: true,
     enableHiding: true,
     cell: ({ row }) => (
-      <span>{row.getValue("type") === 1 ? "Insights" : "Stocks"}</span>
+      <span>{row.getValue("type") === "1" ? "Insights" : "Stocks"}</span>
     ),
     // filterFn: (row, id, value) => {
     //   return value.includes(row.getValue(id));

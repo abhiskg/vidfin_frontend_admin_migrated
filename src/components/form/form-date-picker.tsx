@@ -48,6 +48,7 @@ function FormDatePicker<T extends FieldValues>({
                     "w-full justify-start text-left font-normal",
                     !field.value && "text-muted-foreground",
                   )}
+                  disabled={disabled}
                 >
                   {field.value ? (
                     format(field.value, "PPP")

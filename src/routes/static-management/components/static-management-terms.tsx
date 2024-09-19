@@ -14,18 +14,29 @@ import {
 } from "@/types/static.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function StaticManagementTerms() {
-  const { isPending, data:staticContent } = useQueryStaticContent("terms");
+  const { isPending, data: staticContent } = useQueryStaticContent("terms");
 
   if (isPending) {
     return <PageLoader />;
   }
 
-  return <>{staticContent && <StaticManagementTermsForm staticContent={staticContent} />}</>;
+  return (
+    <>
+      {staticContent && (
+        <StaticManagementTermsForm staticContent={staticContent} />
+      )}
+    </>
+  );
 }
 
-function StaticManagementTermsForm({ staticContent }: { staticContent: IStaticContent }) {
+function StaticManagementTermsForm({
+  staticContent,
+}: {
+  staticContent: IStaticContent;
+}) {
   const form = useForm<IStaticContentForm>({
     resolver: zodResolver(staticContentFormSchema),
     defaultValues: {
@@ -37,11 +48,18 @@ function StaticManagementTermsForm({ staticContent }: { staticContent: IStaticCo
   const { isPending, mutate } = useUpdateStaticContentMutation();
 
   const onSubmit = (data: IStaticContentForm) => {
-    mutate({
-      type: data.type,
-      content: data.content,
-      id: staticContent.id.toString(),
-    });
+    mutate(
+      {
+        type: data.type,
+        content: data.content,
+        id: staticContent.id.toString(),
+      },
+      {
+        onSuccess: () => {
+          toast.success("Terms & Conditions updated successfully");
+        },
+      },
+    );
   };
   return (
     <div>

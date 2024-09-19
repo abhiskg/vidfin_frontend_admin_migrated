@@ -8,11 +8,11 @@ export const insightSchema = z.object({
   insight_title: z.string(),
   insight_desc: z.string(),
   author_name: z.string(),
-  type: z.number(),
+  type: z.string(),
   domain_as_slug: z.string(),
   insight_type: z.number(),
-  file: z.null(),
-  subtitle_file: z.string(),
+  file: z.string().nullable(),
+  subtitle_file: z.string().nullable(),
   thumbnail: z.string(),
   thumbnail_original: z.string().nullable(), //temp added
   video_availablity: z.string(),
@@ -43,6 +43,14 @@ export const insightSchema = z.object({
   slug: z.string(),
   created_at: z.string(),
   updated_at: z.string(),
+  categories: z
+    .array(
+      z.object({
+        id: z.number(),
+        category_id: z.number(),
+      }),
+    )
+    .or(z.undefined()),
 });
 
 export type IInsight = z.infer<typeof insightSchema>;
@@ -93,6 +101,7 @@ export const insightFormSchema = z.object({
     .string()
     .min(1, "Premium Video ID can't be empty")
     .refine((value) => !/^\s*$/.test(value), "Premium Video ID can't be empty"),
+  categories: z.array(z.string()).optional(),
 });
 
 export type IInsightForm = z.infer<typeof insightFormSchema>;
@@ -131,6 +140,7 @@ export const insightEditFormSchema = z.object({
     .string()
     .min(1, "Premium Video ID can't be empty")
     .refine((value) => !/^\s*$/.test(value), "Premium Video ID can't be empty"),
+  categories: z.array(z.string()).optional(),
 });
 
 export type IInsightEditForm = z.infer<typeof insightEditFormSchema>;

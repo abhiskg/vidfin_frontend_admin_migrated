@@ -75,10 +75,12 @@ export function FeatureManagementAddDialog({ isOpen, setIsOpen }: Props) {
                     form={form}
                     label="Courses"
                     name="course_ids"
-                    options={courses?.map((course) => ({
-                      label: course.course_name,
-                      value: course.course_id.toString(),
-                    }))}
+                    options={courses
+                      ?.filter((course) => course.status === "published")
+                      .map((course) => ({
+                        label: course.course_name,
+                        value: course.course_id.toString(),
+                      }))}
                     placeholder="Select courses"
                   />
                 )}
@@ -88,10 +90,12 @@ export function FeatureManagementAddDialog({ isOpen, setIsOpen }: Props) {
                     form={form}
                     label="Insights"
                     name="insight_ids"
-                    options={insights?.map((insight) => ({
-                      label: insight.insight_title,
-                      value: insight.insight_id.toString(),
-                    }))}
+                    options={insights
+                      ?.filter((insight) => insight.status === "published")
+                      .map((insight) => ({
+                        label: insight.insight_title,
+                        value: insight.insight_id.toString(),
+                      }))}
                     placeholder="Select insights"
                   />
                 )}

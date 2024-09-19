@@ -7,7 +7,7 @@ export const adminUserSchema = z.object({
   name: z.string(),
   mobile_number: z.string(),
   password: z.string(),
-  image: z.string(),
+  image: z.string().nullable(),
   admin_status: z.string().or(z.number()),
   role_id: z.number(),
   is_deleted: z.number(),
@@ -35,6 +35,10 @@ export const adminUserFormSchema = z.object({
   password: z
     .string()
     .min(1, "Password can't be empty")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+      "Password should contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+    )
     .refine((value) => !/^\s*$/.test(value), "Password can't be empty"),
   role_id: z.string().min(1, "Role can't be empty"),
 });
@@ -51,7 +55,9 @@ export const adminUserEditFormSchema = z.object({
     .min(1, "Email can't be empty")
     .email("Enter a valid email")
     .refine((value) => !/^\s*$/.test(value), "Email can't be empty"),
+
   password: z.string().optional(),
+
   role_id: z.string().min(1, "Role can't be empty"),
 });
 

@@ -14,6 +14,7 @@ import {
 } from "@/types/static.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function StaticManagementPrivacy() {
   const { isPending, data: staticContent } = useQueryStaticContent("privacy");
@@ -51,6 +52,10 @@ function StaticManagementPrivacyForm({
       type: data.type,
       content: data.content,
       id: staticContent.id.toString(),
+    }, {
+      onSuccess: () => {
+        toast.success("Privacy Policy updated successfully");
+      }
     });
   };
   return (

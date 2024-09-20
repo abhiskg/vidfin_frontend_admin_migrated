@@ -5,7 +5,7 @@ export const adminUserSchema = z.object({
   admin_type: z.string(),
   email: z.string(),
   name: z.string(),
-  mobile_number: z.string(),
+  mobile_number: z.string().nullable(),
   password: z.string(),
   image: z.string().nullable(),
   admin_status: z.string().or(z.number()),

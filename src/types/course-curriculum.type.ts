@@ -12,7 +12,7 @@ const courseChapterSchema = z.object({
   subtitle_kind: z.string(),
   subtitle_src_lang: z.string(),
   subtitle_label: z.string(),
-  available_non_subscriber: z.number().nullable(),
+  available_non_subscriber: z.string().nullable(),
   playbackInfo: z.string().nullable(),
   videoid: z.string(),
   subtitle_id: z.string(),

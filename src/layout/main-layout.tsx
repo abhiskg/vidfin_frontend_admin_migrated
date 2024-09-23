@@ -19,7 +19,7 @@ export default function MainLayout() {
     (state) => state.setIsSideNavCollapsed,
   );
 
-  if (user && (user.admin_status === "1" || user?.admin_status === 1)) {
+  if (user) {
     return (
       <div>
         <ResizablePanelGroup

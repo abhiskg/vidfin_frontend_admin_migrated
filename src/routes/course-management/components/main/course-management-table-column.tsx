@@ -1,4 +1,5 @@
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { formateDate } from "@/lib/utils";
 import type { ICourse } from "@/types/course.type";
 import type { ColumnDef } from "@tanstack/react-table";
 import { CourseManagementRowActions } from "./course-management-table-row-action";
@@ -29,6 +30,34 @@ export const courseManagementTableColumns: ColumnDef<ICourse>[] = [
       <DataTableColumnHeader column={column} title="Title" />
     ),
     enableSorting: true,
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Publish Date" />
+    ),
+    cell: ({ row }) => {
+      const date = formateDate(row.getValue("created_at"), {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      return <span>{date}</span>;
+    },
+  },
+  {
+    accessorKey: "updated_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated Date" />
+    ),
+    cell: ({ row }) => {
+      const date = formateDate(row.getValue("updated_at"), {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      return <span>{date}</span>;
+    },
   },
   {
     accessorKey: "language",

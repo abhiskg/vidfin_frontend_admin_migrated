@@ -1,4 +1,5 @@
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { formateDate } from "@/lib/utils";
 import type { IInsight } from "@/types/insight.type";
 import type { ColumnDef } from "@tanstack/react-table";
 import { InsightManagementRowActions } from "./insight-management-table-row-action";
@@ -9,26 +10,27 @@ export const insightManagementTableColumns: ColumnDef<IInsight>[] = [
     header: "SI No",
     cell: ({ row }) => <span>{row.index + 1}</span>,
   },
-  // {
-  //   accessorKey: "thumbnail",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Thumbnail" />
-  //   ),
-  //   enableSorting: false,
-  //   cell: ({ row }) => (
-  //     <img
-  //       src={row.getValue("thumbnail")}
-  //       alt="insight thumbnail"
-  //       className="aspect-video w-20 rounded"
-  //     />
-  //   ),
-  // },
+  
   {
     accessorKey: "insight_title",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Title" />
     ),
     enableSorting: true,
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Publish Date" />
+    ),
+    cell: ({ row }) => {
+      const date = formateDate(row.getValue("created_at"), {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      return <span>{date}</span>;
+    },
   },
   {
     accessorKey: "language",
